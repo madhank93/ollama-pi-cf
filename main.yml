@@ -1,5 +1,11 @@
-- name: Install prerequisite tools in Raspberry pi
+# - name: Install prerequisite tools in Raspberry pi
+#   become: true
+#   hosts: pi
+#   roles:
+#     - prerequisites
+
+- name: Install ollama
   become: true
   hosts: pi
   roles:
-    - prerequisites
+    - ollama
