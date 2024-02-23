@@ -1,0 +1,31 @@
+- name: Install Docker in Raspberry Pi
+  become: true
+  block:
+    - name: Update apt packages
+      ansible.builtin.apt:
+        update_cache: true
+    - name: Install docker packages
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+    - name: Install docker
+      ansible.builtin.apt:
+        name: docker.io
+        state: present
+        update_cache: true
+    - name: In docker group include remote user "{{ user }}"
+      ansible.builtin.user:
+        name: "{{ user }}"
+        groups: "docker"
+        append: true
+    - name: Install docker-compose
+      ansible.builtin.apt:
+        name: docker-compose
+        state: present
+        update_cache: true
