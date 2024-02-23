@@ -27,5 +27,7 @@
     - name: Run Docker Compose
       community.docker.docker_compose:
         debug: true
-        project_src: "/home/{{ user }}/docker-compose.yml"
+        project_src: "/home/{{ user }}"
+        files:
+          - docker-compose.yml
         state: present
