@@ -1,2 +1,7 @@
 user: madhan
 codename: bookworm
+open_webui:
+  docker_image: main
+  git_tag: v0.1.0-101
+ollama:
+  docker_image: 0.1.26
