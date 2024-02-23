@@ -1,33 +1,20 @@
 - name: Install Ollama in Raspberry Pi
   become: true
   block:
-    # - name: Update apt packages
-    #   ansible.builtin.apt:
-    #     update_cache: true
-    # - name: Install ollama
-    #   ansible.builtin.shell:
-    #     cmd: |
-    #       set -o pipefail
-    #       curl -fsSL https://ollama.com/install.sh | sh
-    #   args:
-    #     executable: /bin/bash
-    #   changed_when: true
+    - name: Git checkout Open webui (ollama webui)
+      ansible.builtin.git:
+        repo: "https://github.com/open-webui/open-webui.git"
+        dest: "/home/{{ user }}/open-webui"
+        version: "{{ open_webui.git_tag }}"
     - name: Copy docker compose file
-      ansible.builtin.copy:
+      ansible.builtin.template:
         mode: u=rwx,g=rx,o=rx
-        src: "{{ playbook_dir }}/roles/ollama/files/docker-compose.yml"
-        dest: /home/{{ user }}
-    - name: Get current directory
-      ansible.builtin.command: pwd
-      register: current_dir
-      changed_when: false
-    - name: Print current directory
-      ansible.builtin.debug:
-        msg: "{{ current_dir.stdout }}"
+        src: "{{ playbook_dir }}/roles/ollama/templates/docker-compose.yml.j2"
+        dest: "/home/{{ user }}/open-webui/docker-compose.yml"
     - name: Run Docker Compose
       community.docker.docker_compose:
         debug: true
-        project_src: "/home/{{ user }}"
+        project_src: "/home/{{ user }}/open-webui"
         files:
           - docker-compose.yml
         state: present
