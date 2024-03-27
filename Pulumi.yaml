@@ -1,0 +1,7 @@
+name: ollama-pi-cf
+runtime: go
+description: Serving LLMs from pi using ollama and cloudflare tunnel
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: go

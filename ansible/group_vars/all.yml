@@ -5,3 +5,5 @@ open_webui:
   git_tag: v0.1.0-101
 ollama:
   docker_image: 0.1.26
+cloudflared:
+  version: 2024.2.1

@@ -1,0 +1,3 @@
+---
+- name: Include install_cloudflare_tunnel task file
+  ansible.builtin.include_tasks: install_cloudflare_tunnel.yml

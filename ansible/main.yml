@@ -4,8 +4,14 @@
 #   roles:
 #     - prerequisites
 
-- name: Install ollama
+# - name: Install ollama
+#   become: true
+#   hosts: pi
+#   roles:
+#     - ollama
+
+- name: Install cloudflare
   become: true
   hosts: pi
   roles:
-    - ollama
+    - cloudflare_tunnel

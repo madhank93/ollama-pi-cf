@@ -1,0 +1,50 @@
+---
+- name: Install Cloudflare tunnel in Raspberry Pi
+  become: true
+  block:
+    - name: Download the cloudflared package.
+      ansible.builtin.get_url:
+        url: https://github.com/cloudflare/cloudflared/releases/download/{{ cloudflared.version }}/cloudflared-linux-arm64.deb
+        dest: "/home/{{ user }}"
+        mode: u=rwx,g=rx,o=rx
+    - name: Install cloudflared
+      ansible.builtin.command: sudo dpkg -i cloudflared-linux-arm64.deb
+      changed_when: false
+    - name: Create a cloudflared service directory
+      ansible.builtin.command: mkdir -p /etc/cloudflared/
+      changed_when: false
+    - name: Include cloudflare vars
+      ansible.builtin.include_vars:
+        file: cloudflare_vars.yml
+    - name: Create the config file for cloudflared and define the ingress rules for the tunnel
+      ansible.builtin.copy:
+        mode: u=rwx,g=rx,o=rx
+        dest: ".cloudflared/config.yml"
+        content: |
+          tunnel: "{{ tunnel_id }}"
+          credentials-file: ".cloudflared/cert.json"
+          logfile: /var/log/cloudflared.log
+          loglevel: info
+          ingress:
+            - hostname: "ai.{{ hostname }}"
+              service: http://localhost:3000
+    - name: Create the tunnel credentials file for cloudflared
+      ansible.builtin.copy:
+        mode: u=rwx,g=rx,o=rx
+        dest: ".cloudflared/cert.json"
+        content: |
+          {
+            "AccountTag"   : "{{ account | quote }}",
+            "TunnelID"     : "{{ tunnel_id | quote }}",
+            "TunnelName"   : "{{ tunnel_name | quote }}",
+            "TunnelSecret" : "{{ secret | quote }}"
+          }
+    - name: Install the tunnel as a systemd service.
+      ansible.builtin.command: cloudflared service install
+      changed_when: false
+    - name: Start the tunnel.
+      ansible.builtin.systemd:
+        name: cloudflared
+        state: started
+        enabled: true
+        masked: false

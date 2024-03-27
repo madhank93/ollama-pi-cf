@@ -1,0 +1,5 @@
+tunnel_id: $TUNNEL_ID
+account: $ACCOUNT_ID
+tunnel_name: $TUNNEL_NAME
+secret: $TUNNEL_SECRET
+hostname: "madhan.app"
